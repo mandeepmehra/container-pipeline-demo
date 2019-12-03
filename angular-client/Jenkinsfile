@@ -97,7 +97,7 @@ pipeline{
            }
         }
 
-        stage ('Publish Image'){
+        stage ('Publish Image for QA'){
           steps{
             script {
               docker.withRegistry( '', DTR_CREDS ) {
@@ -151,7 +151,7 @@ pipeline{
                 }
             }
         }
-        stage ('Publish Image'){
+        stage ('Publish Image for Production'){
             when{
                 environment name: 'GIT_BRANCH', value: 'origin/master'
             }            
