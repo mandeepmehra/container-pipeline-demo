@@ -1,0 +1,13 @@
+version: '2' # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+  fe: # name of the first service
+    build: angular-client # specify the directory of the Dockerfile
+    image: konarpriyanku/xebia_fe
+    ports:
+      - "8080:80" # specify port forewarding
+networks: 
+  default:
+    external:
+      name: backend # create new network if not available ( docker create network backend)
