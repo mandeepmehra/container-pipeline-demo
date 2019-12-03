@@ -9,7 +9,7 @@ pipeline{
         SCAN_IMAGE = 'false'
         QA_PORT = '30201'
         PROD_PORT = '30200'
-        APP_NAME='frontend'
+        APP_NAME='xebia-fe'
         SRC_DIR='angular-client'
         DTR_URL = 'mandeepmehra'
         DTR_CREDS = 'dockerhub'
