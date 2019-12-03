@@ -12,22 +12,24 @@ pipeline{
         APP_NAME='frontend'
         SRC_DIR='angular-client'
         DTR_URL = 'mandeepmehra'
-	DTR_CREDS = 'dockerhub'
+        DTR_CREDS = 'dockerhub'
         DTR_NAMESPACE = 'demo'
         IMAGE_NAME = 'frontend-ui-demo'
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
         IMAGE_TAG = "${DTR_URL}/${IMAGE_NAME}:${BUILD_NUMBER}"
-	DOCKER_IMAGE = ''
+        DOCKER_IMAGE = ''
         SKIP_INTEGRATION_TEST='false'
         ARTIFACTORY_USER = ''
         ARTIFACTORY_PASS = ''
     }
+
     stages{
         stage ('Print Metadata'){
             steps{
                 echo sh(returnStdout: true, script: 'env')
             }
         }
+
         stage ('Pull dependencies'){
            parallel{
                stage ('npm dependencies') {
@@ -74,8 +76,8 @@ pipeline{
         }
 
 
-        stage ('Build Docker Image and Package chart'){
-          parallel {
+        stage ('Build Docker Image'){
+
             stage ('Build Image'){
               steps{
 		            dir("${SRC_DIR}"){
@@ -85,7 +87,7 @@ pipeline{
                 }
              }
             }
-          }
+
         }
 
         stage ('Scan Image'){
@@ -100,7 +102,6 @@ pipeline{
         }
 
         stage ('Publish Image & Package'){
-          parallel {
             stage ('Publish Image'){
               steps{
                 script {
@@ -110,8 +111,6 @@ pipeline{
                 }
               }
             }
-            }
-          }
         }
 
         stage ('Deploy to QA'){
@@ -120,6 +119,7 @@ pipeline{
                   sh "helm upgrade --install ${APP_NAME}-qa  --set buildNumber=$BUILD_NUMBER,image.tag=$BUILD_NUMBER-qa,image.repository=${DTR_URL}/${IMAGE_NAME},service.nodePort=$QA_PORT --namespace qa helm/${APP_NAME} --version ${HELM_CHART_VER}"
             }
         }
+        
         stage ('QA Deployment Verification'){
             input {
                 message 'Deployment Success'
