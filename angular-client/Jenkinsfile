@@ -62,7 +62,7 @@ pipeline{
               steps{
                 dir("${SRC_DIR}"){
                   withSonarQubeEnv('localsonar') {
-                    sh "sonar-scanner -Dsonar.host.url=http://sonarqube:9000"
+                    sh "sonar-scanner -Dsonar.host.url=http://52.4.136.188:9000"
                   }
                   // script {
                   //  def qualitygate = waitForQualityGate()
