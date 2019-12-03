@@ -88,6 +88,14 @@ pipeline{
              }
         }
 
+       stage ('Create Helm Package'){
+         steps {
+            dir("helmcharts"){
+                sh 'helm package ${HELM_CHART} --version=${HELM_CHART_VER} -u --app-version ${BUILD_NUMBER}'
+            }
+         }
+       }
+
         stage ('Scan Image'){
             when {
                 expression {
