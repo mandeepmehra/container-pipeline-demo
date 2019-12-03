@@ -76,9 +76,7 @@ pipeline{
         }
 
 
-        stage ('Build Docker Image'){
-
-            stage ('Build Image'){
+        stage ('Build Image'){
               steps{
 		            dir("${SRC_DIR}"){
     		          script {
@@ -86,8 +84,6 @@ pipeline{
 		              }
                 }
              }
-            }
-
         }
 
         stage ('Scan Image'){
@@ -101,16 +97,14 @@ pipeline{
            }
         }
 
-        stage ('Publish Image & Package'){
-            stage ('Publish Image'){
-              steps{
-                script {
-                  docker.withRegistry( '', DTR_CREDS ) {
-                    DOCKER_IMAGE.push()
-                  }
-                }
+        stage ('Publish Image'){
+          steps{
+            script {
+              docker.withRegistry( '', DTR_CREDS ) {
+                DOCKER_IMAGE.push()
               }
             }
+          }
         }
 
         stage ('Deploy to QA'){
@@ -119,7 +113,7 @@ pipeline{
                   sh "helm upgrade --install ${APP_NAME}-qa  --set buildNumber=$BUILD_NUMBER,image.tag=$BUILD_NUMBER-qa,image.repository=${DTR_URL}/${IMAGE_NAME},service.nodePort=$QA_PORT --namespace qa helm/${APP_NAME} --version ${HELM_CHART_VER}"
             }
         }
-        
+
         stage ('QA Deployment Verification'){
             input {
                 message 'Deployment Success'
