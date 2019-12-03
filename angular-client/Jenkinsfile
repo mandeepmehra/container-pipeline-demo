@@ -107,11 +107,27 @@ pipeline{
            }
         }
 
-        stage ('Publish Image for QA'){
-          steps{
-            script {
-              docker.withRegistry( '', DTR_CREDS ) {
-                DOCKER_IMAGE.push()
+
+       stage ('Publish Image & Package'){
+          parallel {
+            stage ('Publish Image'){
+              steps{
+                script {
+                  docker.withRegistry( '', DTR_CREDS ) {
+                    DOCKER_IMAGE.push()
+                  }
+                }
+              }
+            }
+            stage ('Publish helm package') {
+              steps {
+                dir("helmcharts"){
+                  sh 'helm repo update'
+             
+                  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'artifactorycreds', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASS']]) {
+                    sh "curl -u${ARTIFACTORY_USER}:${ARTIFACTORY_PASS} -T ${HELM_CHART}-${HELM_CHART_VER}.tgz ${ARTIFACTORY_URL}/helm/${HELM_CHART}-${HELM_CHART_VER}.tgz"
+                  }
+                }
               }
             }
           }
