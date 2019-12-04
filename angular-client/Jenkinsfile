@@ -6,7 +6,7 @@ pipeline{
          buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     environment {
-        SCAN_IMAGE = 'false'
+        SCAN_IMAGE = 'true'
         QA_PORT = '30201'
         PROD_PORT = '30200'
         APP_NAME='xebia-fe'
