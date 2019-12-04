@@ -208,20 +208,6 @@ pipeline{
             }    
         }        
 
-        stage ('Run Prod Integration Tests'){
-            when {
-                expression {
-                    return SKIP_INTEGRATION_TEST == 'false';
-                }
-            }
-
-            steps{
-                dir("${SRC_DIR}/e2e"){
-                    sh "protractor protractor.conf.js --baseUrl=http://${KUBE_HOST}:${PROD_PORT}"
-                }
-                
-            }
-        }        
 
         stage ('Business Validation'){
           when{
@@ -247,15 +233,4 @@ pipeline{
           }
         }
     }
-
-    post 
-    {  
-         failure {  
-             mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL : ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "mandeep.mehra@xebia.com";  
-         }  
-         changed {  
-           mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL : ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "Build Status Changed: Project name -> ${env.JOB_NAME}", to: "mandeep.mehra@xebia.com";      
-         }  
-     }  
-
 }
